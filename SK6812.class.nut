@@ -2,18 +2,18 @@
 // This file is licensed under the MIT License
 // http://opensource.org/licenses/MIT
 
-class WS2812 {
-    // This class uses SPI to emulate the WS2812s' one-wire protocol.
+class SK6812 {
+    // This class uses SPI to emulate the SK6812s' one-wire protocol.
     // This requires one byte per bit to send data at 7.5 MHz via SPI.
     // These consts define the "waveform" to represent a zero or one
 
-    static VERSION = [2,0,2];
+    static VERSION = [1,0,0];
 
     static ZERO            = 0xC0;
     static ONE             = 0xF8;
-    static BYTES_PER_PIXEL   = 24;
+    static BYTES_PER_PIXEL   = 32;
 
-    // When instantiated, the WS2812 class will fill this array with blobs to
+    // When instantiated, the SK6812 class will fill this array with blobs to
     // represent the waveforms to send the numbers 0 to 255. This allows the
     // blobs to be copied in directly, instead of being built for each pixel.
 
@@ -38,10 +38,10 @@ class WS2812 {
         _frame[_frameSize * BYTES_PER_PIXEL] = 0;
 
         // Used in constructing the _bits array
-        local bytesPerColor = BYTES_PER_PIXEL / 3;
+        local bytesPerColor = BYTES_PER_PIXEL / 4;
 
         // Fill the _bits array if required
-        // (Multiple instance of WS2812 will only initialize it once)
+        // (Multiple instance of SK6812 will only initialize it once)
         if (_bits[0] == null) {
             for (local i = 0; i < 256; i++) {
                 local valblob = blob(bytesPerColor);
@@ -58,7 +58,7 @@ class WS2812 {
         }
 
         // Clear the pixel buffer
-        fill([0,0,0]);
+        fill([0,0,0,0]);
 
         // Output the pixels if required
         if (_draw) {
@@ -77,9 +77,8 @@ class WS2812 {
 
     // Sets a pixel in the buffer
     //   index - the index of the pixel (0 <= index < _frameSize)
-    //   color - [r,g,b] (0 <= r,g,b <= 255)
-    //
-    // NOTE: set(index, color) replaces v1.x.x's writePixel(p, color) method
+    //   color - [r,g,b,w] (0 <= r,g,b,w <= 255)
+
     function set(index, color) {
         index = _checkRange(index);
         color = _checkColorRange(color);
@@ -91,14 +90,14 @@ class WS2812 {
         _frame.writeblob(_bits[color[1]]);
         _frame.writeblob(_bits[color[0]]);
         _frame.writeblob(_bits[color[2]]);
+        _frame.writeblob(_bits[color[3]]);
 
         return this;
     }
 
     // Sets the frame buffer (or a portion of the frame buffer)
     // to the specified color, but does not write it to the pixel strip
-    //
-    // NOTE: fill([0,0,0]) replaces v1.x.x's clear() method
+
     function fill(color, start=0, end=null) {
         // we can't default to _frameSize -1, so we
         // default to null and set to _frameSize - 1
@@ -122,6 +121,7 @@ class WS2812 {
         colorBlob.writeblob(_bits[color[1]]);
         colorBlob.writeblob(_bits[color[0]]);
         colorBlob.writeblob(_bits[color[2]]);
+        colorBlob.writeblob(_bits[color[3]]);
 
         // Write the color blob to each pixel in the fill
         _frame.seek(start*BYTES_PER_PIXEL);
@@ -133,8 +133,7 @@ class WS2812 {
     }
 
     // Writes the frame to the pixel strip
-    //
-    // NOTE: draw() replaces v1.x.x's writeFrame() method
+
     function draw() {
         _spi.write(_frame);
         return this;
