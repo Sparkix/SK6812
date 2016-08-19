@@ -77,7 +77,7 @@ pixels.set(0, [127,0,0,0]).draw();
 
 ### fill(*color, [start], [end]*)
 
-The *fill* methods sets all pixels in the specified range to the desired color. If no range is selected, the entire frame will be filled with the specified color.
+The *fill* methods sets all pixels in the specified range to the desired color. If no range is selected, the entire frame will be filled with the specified color.  If only the start of the range is given, the frame will be filled from that point to the end of the frame.
 
 NOTE: The *fill* method does not output the changes to the pixel strip. After setting up the frame, you must call `draw` (see below) to output the frame to the strip.
 
