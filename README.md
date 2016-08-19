@@ -10,7 +10,7 @@ Some example hardware that uses the SK6812:
 
 **To add this library to your project, add `#require "SK6812.class.nut:1.0.0"` to the top of your device code.**
 
-You can view the library’s source code on [GitHub](https://github.com/Sparkix/SK6812/tree/v1.0.0).
+You can view the library’s source code on [GitHub](https://github.com/Sparkix/SK6812/blob/master/SK6812.class.nut).
 
 ## Hardware
 
