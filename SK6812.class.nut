@@ -2,6 +2,8 @@
 // This file is licensed under the MIT License
 // http://opensource.org/licenses/MIT
 
+// This class was created based on the WS2812 library by DHeadrick
+
 class SK6812 {
     // This class uses SPI to emulate the SK6812s' one-wire protocol.
     // This requires one byte per bit to send data at 7.5 MHz via SPI.
